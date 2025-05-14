@@ -3,7 +3,7 @@ services:
     image: postgres:16
     container_name: postgres-db
     ports:
-      - "${PGPORT:-5432}:5432"
+      - "${PGPORT}:5432"
     environment:
       POSTGRES_USER: ${PGUSER}
       POSTGRES_PASSWORD: ${PGPASSWORD}
@@ -23,10 +23,9 @@ services:
       dockerfile: Dockerfile
     container_name: fastapi-backend
     ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@db:5432/${PGDATABASE}
-      - ENVIRONMENT=${ENVIRONMENT:-dev}
+      - "${BACKEND_PORT}:8000"
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -40,13 +39,12 @@ services:
       dockerfile: Dockerfile
     container_name: react-frontend
     ports:
-      - "${FRONTEND_PORT:-3000}:3000"
+      - "${FRONTEND_PORT}:3000"
     volumes:
       - ./app/frontend:/app
       - /app/node_modules
-    environment:
-      - ENVIRONMENT=${ENVIRONMENT:-dev}
-      - VITE_API_URL=http://localhost:8000
+    env_file:
+      - .env
     depends_on:
       - backend
     restart: unless-stopped

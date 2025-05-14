@@ -1,9 +1,15 @@
 import pathlib
-from pydantic_settings import BaseSettings
+import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
 
-env_file_path = pathlib.Path(__file__).absolute().parents[4] / ".env"
+try:
+    env_path = pathlib.Path(__file__).absolute().parents[4] / ".env"
+    load_dotenv(dotenv_path=env_path)
+except (IndexError, FileNotFoundError):
+    pass
+
 class Settings(BaseSettings):
-
     # Environment (local, dev, prod)
     ENVIRONMENT: str
 
@@ -19,6 +25,7 @@ class Settings(BaseSettings):
     BACKEND_HOST: str
 
     # Frontend
+    FRONTEND_PORT: str
     VITE_API_URL: str
     
     # JWT Settings
@@ -27,9 +34,11 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int
     JWT_ALGORITHM: str
 
-    class Config:
-        env_file = env_file_path
-        env_file_encoding = "utf-8"
+    # For pydantic v2, use SettingsConfigDict instead of Config class
+    model_config = SettingsConfigDict(
+        env_prefix="",
+        extra="ignore",
+    )
 
     @property
     def DATABASE_URL(self) -> str:
