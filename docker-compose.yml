@@ -16,6 +16,40 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  
+  backend:
+    build:
+      context: ./app/backend
+      dockerfile: Dockerfile
+    container_name: fastapi-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@db:5432/${PGDATABASE}
+      - ENVIRONMENT=${ENVIRONMENT:-dev}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app/backend:/app
+    restart: unless-stopped
+  
+  frontend:
+    build:
+      context: ./app/frontend
+      dockerfile: Dockerfile
+    container_name: react-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    volumes:
+      - ./app/frontend:/app
+      - /app/node_modules
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-dev}
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
 
 volumes:
   postgres_data:
