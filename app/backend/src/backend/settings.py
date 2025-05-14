@@ -20,6 +20,12 @@ class Settings(BaseSettings):
 
     # Frontend
     VITE_API_URL: str
+    
+    # JWT Settings
+    JWT_SECRET_KEY: str
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int
+    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int
+    JWT_ALGORITHM: str
 
     class Config:
         env_file = env_file_path
