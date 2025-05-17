@@ -1,9 +1,7 @@
-import uuid
 from datetime import datetime
+from typing import Optional, List
 from enum import Enum
-from typing import Optional
-
-from sqlmodel import Field, Index, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 
 
 class UserRole(str, Enum):
@@ -11,34 +9,30 @@ class UserRole(str, Enum):
     ADMIN = "admin"
 
 
+class UserStatus(str, Enum):
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+    PENDING = "pending"
+
+
 class User(SQLModel, table=True):
-    """User model representing application users in the database."""
-    
-    __table_args__ = (
-        Index("ix_user_email", "email", unique=True),
-    )
-    
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-        primary_key=True,
-        index=True,
-    )
-    email: str = Field(...)
-    password_hash: str = Field(...)
-    name: str = Field(...)
-    is_active: bool = Field(default=True)
-    is_verified: bool = Field(default=False)
+    """User model for authentication and user management."""
+    __tablename__ = "users"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    email: str = Field(unique=True, index=True)
+    username: str = Field(unique=True, index=True)
+    hashed_password: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    bio: Optional[str] = None
+    profile_image_url: Optional[str] = None
     role: UserRole = Field(default=UserRole.USER)
+    status: UserStatus = Field(default=UserStatus.PENDING)
+    is_email_verified: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "email": "user@example.com",
-                "name": "John Doe",
-                "is_active": True,
-                "is_verified": False,
-                "role": "user",
-            }
-        }
+    # Define relationships
+    auth_tokens: List["AuthToken"] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
+    oauth_accounts: List["OAuthAccount"] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete-orphan"})

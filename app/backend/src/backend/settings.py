@@ -34,6 +34,13 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int
     JWT_ALGORITHM: str
 
+    # Admin user
+    ADMIN_EMAIL: str
+    ADMIN_USERNAME: str
+    ADMIN_PASSWORD: str
+    ADMIN_FIRST_NAME: str
+    ADMIN_LAST_NAME: str
+
     # For pydantic v2, use SettingsConfigDict instead of Config class
     model_config = SettingsConfigDict(
         env_prefix="",

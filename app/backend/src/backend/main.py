@@ -2,8 +2,8 @@ import uvicorn
 from contextlib import asynccontextmanager
 from backend.api import app
 from backend.settings import settings
-from backend.database import create_db_and_tables
-from backend.database import run_migrations
+from backend.db import create_db_and_tables
+from backend.db import run_migrations
 
 def main() -> None:
     print("Hello from backend!!")

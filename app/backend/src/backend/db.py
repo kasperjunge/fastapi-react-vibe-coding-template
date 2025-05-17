@@ -4,7 +4,7 @@ from pathlib import Path
 
 from alembic.config import Config
 from alembic import command
-from sqlmodel import Session, SQLModel, create_engine, select
+from sqlmodel import Session, SQLModel, create_engine
 
 from backend.settings import settings
 
@@ -12,8 +12,8 @@ from backend.settings import settings
 engine = create_engine(
     settings.DATABASE_URL,
     echo=False,
-    pool_pre_ping=True,  # Check connection before using it
-    pool_recycle=300,  # Recycle connections every 5 minutes
+    pool_pre_ping=True, 
+    pool_recycle=300, 
 )
 
 
@@ -22,7 +22,7 @@ def create_db_and_tables() -> None:
     SQLModel.metadata.create_all(engine)
 
 
-def get_session() -> Session:
+def get_db() -> Session:
     """Get a database session."""
     with Session(engine) as session:
         yield session
