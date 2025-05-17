@@ -4,3 +4,5 @@
 - auth
 - email verification + restore password
 - logging
+
+# admin
