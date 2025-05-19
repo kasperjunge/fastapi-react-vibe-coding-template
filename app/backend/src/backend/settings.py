@@ -52,3 +52,4 @@ class Settings(BaseSettings):
         return f"postgresql://{self.PGUSER}:{self.PGPASSWORD}@{self.PGHOST}:{self.PGPORT}/{self.PGDATABASE}"
 
 settings = Settings()
+

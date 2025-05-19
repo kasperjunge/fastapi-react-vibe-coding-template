@@ -1,8 +1,6 @@
-from backend.services.users.models import User, UserRole, UserStatus
+from backend.services.users.models import User
 from backend.services.users.schemas import UserCreate
-from backend.db import get_db
 from sqlmodel import Session
-from backend.settings import settings
 
 class UserService:
 
@@ -12,21 +10,12 @@ class UserService:
         db.commit()
         db.refresh(user)
         return user
-    
 
-def create_admin_user(db: Session):
-
-    existing_admin = db.query(User).filter(User.email == settings.ADMIN_EMAIL).first()
+    def get_user_by_email(self, email: str, db: Session):
+        return db.query(User).filter(User.email == email).first()
     
-    if existing_admin:
-        return existing_admin
+    def get_user_by_id(self, id: int, db: Session):
+        return db.query(User).filter(User.id == id).first()
     
-    user = User(
-        email=settings.ADMIN_EMAIL,
-        username=settings.ADMIN_USERNAME,
-        password=settings.ADMIN_PASSWORD,
-        role=UserRole.ADMIN,
-        status=UserStatus.ACTIVE,
-    )
-    user = UserService().create_user(user, db)
-    return user
+    def get_all_users(self, db: Session):
+        return db.query(User).all()

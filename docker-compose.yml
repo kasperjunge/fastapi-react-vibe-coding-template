@@ -33,21 +33,21 @@ services:
       - ./app/backend:/app
     restart: unless-stopped
   
-  frontend:
-    build:
-      context: ./app/frontend
-      dockerfile: Dockerfile
-    container_name: react-frontend
-    ports:
-      - "${FRONTEND_PORT}:3000"
-    volumes:
-      - ./app/frontend:/app
-      - /app/node_modules
-    env_file:
-      - .env
-    depends_on:
-      - backend
-    restart: unless-stopped
+  # frontend:
+  #   build:
+  #     context: ./app/frontend
+  #     dockerfile: Dockerfile
+  #   container_name: react-frontend
+  #   ports:
+  #     - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+  #   volumes:
+  #     - ./app/frontend:/app
+  #     - /app/node_modules
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - backend
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:
