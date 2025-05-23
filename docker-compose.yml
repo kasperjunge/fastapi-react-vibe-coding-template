@@ -33,6 +33,22 @@ services:
       - ./app/backend:/app
     restart: unless-stopped
   
+  migrate:
+    build:
+      context: ./app/backend
+      dockerfile: Dockerfile
+    container_name: alembic-migrate
+    command: >
+      sh -c 'until pg_isready -h db -p 5432 -U $PGUSER; do echo "Waiting for database to be ready..."; sleep 1; done && uv run alembic upgrade head'
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app/backend:/app
+    restart: on-failure
+  
   # frontend:
   #   build:
   #     context: ./app/frontend

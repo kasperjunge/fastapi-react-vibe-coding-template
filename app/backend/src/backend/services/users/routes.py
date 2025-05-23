@@ -24,6 +24,14 @@ def get_user_by_email(email: str, db: Session = Depends(get_db)):
         return user
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+    
+@router.get("/")
+def get_all_users(db: Session = Depends(get_db)):
+    try:
+        users = UserService().get_all_users(db)
+        return users
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 # @router.get("/me")
 # def get_current_user():
