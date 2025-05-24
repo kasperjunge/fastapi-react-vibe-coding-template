@@ -75,3 +75,4 @@ uv run pytest
 4. Create API endpoints in `routes.py`
 5. Register the router in `src/backend/api.py`
 6. Create corresponding test files in `tests/services/your_service/`
+\n## Authentication\nThis project includes a simple authentication service with JWT-based login, email verification and password reset.
