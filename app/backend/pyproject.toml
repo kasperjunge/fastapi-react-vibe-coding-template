@@ -17,8 +17,10 @@ dependencies = [
     "sqlmodel>=0.0.24",
     "uvicorn>=0.34.2",
     "python-jose[cryptography]>=3.3.0",
-    "passlib[bcrypt]>=1.7.4", 
+    "passlib[bcrypt]>=1.7.4",
     "python-multipart>=0.0.9",
+    "supertokens-python>=0.21.0",
+    "supertokens-fastapi>=0.6.0",
 ]
 
 [project.scripts]

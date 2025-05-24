@@ -29,8 +29,25 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      supertokens:
+        condition: service_started
     volumes:
       - ./app/backend:/app
+    restart: unless-stopped
+
+  supertokens:
+    image: supertokens/supertokens-postgresql
+    container_name: supertokens-core
+    ports:
+      - "3567:3567"
+    env_file:
+      - .env
+    environment:
+      POSTGRESQL_CONNECTION_URI: ${SUPERTOKENS_DB_URI}
+      API_KEYS: ${SUPERTOKENS_API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
   
   migrate:

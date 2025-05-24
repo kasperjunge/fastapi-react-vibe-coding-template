@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int
     JWT_ALGORITHM: str
 
+    # SuperTokens
+    SUPERTOKENS_CONNECTION_URI: str
+    SUPERTOKENS_API_KEY: str | None = None
+
     # Admin user
     ADMIN_EMAIL: str
     ADMIN_USERNAME: str
