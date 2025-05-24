@@ -51,5 +51,9 @@ class Settings(BaseSettings):
     def DATABASE_URL(self) -> str:
         return f"postgresql://{self.PGUSER}:{self.PGPASSWORD}@{self.PGHOST}:{self.PGPORT}/{self.PGDATABASE}"
 
+    @property
+    def ASYNC_DATABASE_URL(self) -> str:
+        return self.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
+
 settings = Settings()
 

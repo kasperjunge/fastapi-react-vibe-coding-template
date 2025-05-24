@@ -69,3 +69,4 @@ def get_all_users(db: Session = Depends(get_db)):
 # @router.get("/username-available/{username}")
 # def is_username_available():
 #     return {"message": "Username availability checked successfully"}
+

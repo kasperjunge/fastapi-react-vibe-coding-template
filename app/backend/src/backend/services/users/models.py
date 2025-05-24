@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 from enum import Enum
 from sqlmodel import Field, SQLModel, Relationship
+from fastapi_users.db import SQLModelBaseUserTable, SQLModelBaseOAuthAccountTable
 
 
 class UserRole(str, Enum):
@@ -15,7 +16,11 @@ class UserStatus(str, Enum):
     PENDING = "pending"
 
 
-class User(SQLModel, table=True):
+class OAuthAccount(SQLModel, SQLModelBaseOAuthAccountTable, table=True):
+    pass
+
+
+class User(SQLModel, SQLModelBaseUserTable, table=True):
     """User model for authentication and user management."""
     __tablename__ = "users"
 
@@ -34,5 +39,5 @@ class User(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     
     # Define relationships
-    auth_tokens: List["AuthToken"] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
-    oauth_accounts: List["OAuthAccount"] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
+    oauth_accounts: List[OAuthAccount] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
+

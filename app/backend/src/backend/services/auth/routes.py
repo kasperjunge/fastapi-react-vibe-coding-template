@@ -1,60 +1,36 @@
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/auth")
+from .fastapi_users import fastapi_users, auth_backend
 
+router = APIRouter()
 
-# -- Register --
+# JWT auth routes
+router.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["auth"],
+)
 
-@router.post("/register")
-async def register():
-    return {"message": "User registered successfully"}
+# Registration and verification
+router.include_router(
+    fastapi_users.get_register_router(),
+    prefix="/auth",
+    tags=["auth"],
+)
+router.include_router(
+    fastapi_users.get_verify_router(),
+    prefix="/auth",
+    tags=["auth"],
+)
+router.include_router(
+    fastapi_users.get_reset_password_router(),
+    prefix="/auth",
+    tags=["auth"],
+)
 
-@router.get("/verify-email")
-async def verify_email():
-    return {"message": "Email verified successfully"}
-
-@router.post("/resend-verification")
-async def resend_verification():
-    return {"message": "Verification email sent successfully"}
-
-
-# -- Login / Logout --
-
-@router.post("/login")
-async def login():
-    return {"message": "User logged in successfully"}
-
-@router.post("/refresh")
-async def refresh():
-    return {"message": "Token refreshed successfully"}
-
-@router.post("/logout")
-async def logout():
-    return {"message": "User logged out successfully"}
-
-@router.get("/oauth/{provider}")
-async def oauth_login(provider: str):
-    return {"message": f"Redirecting to {provider} login"}
-
-@router.get("/oauth/{provider}/callback")
-async def oauth_callback(provider: str, code: str):
-    return {"message": f"Callback received from {provider} with code {code}"}
-
-
-# -- Change Password --
-
-@router.post("/change-password")
-async def change_password():
-    return {"message": "Password changed successfully"}
-
-
-# -- Password Reset --
-
-@router.post("/request-password-reset")
-async def request_password_reset():
-    return {"message": "Password reset request sent successfully"}
-
-@router.post("/reset-password")
-async def reset_password():
-    return {"message": "Password reset successfully"}
-
+# Users router
+router.include_router(
+    fastapi_users.get_users_router(),
+    prefix="/users",
+    tags=["users"],
+)
