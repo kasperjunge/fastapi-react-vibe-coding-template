@@ -4,36 +4,30 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 
 try:
-    env_path = pathlib.Path(__file__).absolute().parents[4] / ".env"
+    env_path = pathlib.Path(__file__).absolute().parents[3] / ".env"
     load_dotenv(dotenv_path=env_path)
 except (IndexError, FileNotFoundError):
     pass
 
 class Settings(BaseSettings):
-    # Environment (local, dev, prod)
+    # Environment (dev, prod)
     ENVIRONMENT: str
 
     # Postgres DB
-    PGHOST: str
-    PGPORT: str
-    PGDATABASE: str
-    PGUSER: str
-    PGPASSWORD: str
+    POSTGRES_HOST: str
+    POSTGRES_PORT: str
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
 
     # Backend
-    BACKEND_PORT: int
     BACKEND_HOST: str
+    BACKEND_PORT: int
 
     # Frontend
-    FRONTEND_PORT: str
     VITE_API_URL: str
+    FRONTEND_PORT: str
     
-    # JWT Settings
-    JWT_SECRET_KEY: str
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int
-    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int
-    JWT_ALGORITHM: str
-
     # Admin user
     ADMIN_EMAIL: str
     ADMIN_USERNAME: str
@@ -49,7 +43,7 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
-        return f"postgresql://{self.PGUSER}:{self.PGPASSWORD}@{self.PGHOST}:{self.PGPORT}/{self.PGDATABASE}"
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 settings = Settings()
 

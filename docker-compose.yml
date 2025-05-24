@@ -1,69 +1,29 @@
 services:
-  db:
-    image: postgres:16
-    container_name: postgres-db
-    ports:
-      - "${PGPORT}:5432"
-    environment:
-      POSTGRES_USER: ${PGUSER}
-      POSTGRES_PASSWORD: ${PGPASSWORD}
-      POSTGRES_DB: ${PGDATABASE}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-  
   backend:
     build:
-      context: ./app/backend
+      context: ./backend
       dockerfile: Dockerfile
     container_name: fastapi-backend
     ports:
       - "${BACKEND_PORT}:8000"
     env_file:
       - .env
-    depends_on:
-      db:
-        condition: service_healthy
     volumes:
-      - ./app/backend:/app
+      - ./backend:/app
     restart: unless-stopped
-  
-  migrate:
+    
+  frontend:
     build:
-      context: ./app/backend
+      context: ./frontend
       dockerfile: Dockerfile
-    container_name: alembic-migrate
-    command: >
-      sh -c 'until pg_isready -h db -p 5432 -U $PGUSER; do echo "Waiting for database to be ready..."; sleep 1; done && uv run alembic upgrade head'
+    container_name: react-frontend
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    volumes:
+      - ./frontend:/app
+      - /frontend/node_modules
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - ./app/backend:/app
-    restart: on-failure
-  
-  # frontend:
-  #   build:
-  #     context: ./app/frontend
-  #     dockerfile: Dockerfile
-  #   container_name: react-frontend
-  #   ports:
-  #     - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-  #   volumes:
-  #     - ./app/frontend:/app
-  #     - /app/node_modules
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - backend
-  #   restart: unless-stopped
-
-volumes:
-  postgres_data:
+      - backend
+    restart: unless-stopped
