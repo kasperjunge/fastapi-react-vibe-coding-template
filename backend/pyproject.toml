@@ -11,14 +11,16 @@ dependencies = [
     "alembic>=1.15.2",
     "fastapi>=0.115.12",
     "psycopg2-binary>=2.9.10",
-    "pydantic>=2.11.4",
+    "pydantic[email]>=2.11.4",
     "pydantic-settings>=2.9.1",
     "python-dotenv>=1.1.0",
     "sqlmodel>=0.0.24",
     "uvicorn>=0.34.2",
     "python-jose[cryptography]>=3.3.0",
-    "passlib[bcrypt]>=1.7.4", 
+    "passlib[bcrypt]>=1.7.4",
     "python-multipart>=0.0.9",
+    "fastapi-users[oauth,sqlalchemy]>=14.0.1",
+    "asyncpg>=0.30.0",
 ]
 
 [project.scripts]
