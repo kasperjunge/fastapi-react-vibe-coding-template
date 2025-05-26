@@ -1,9 +1,10 @@
 import os
+
 from dotenv import load_dotenv
 
-load_dotenv()
-
 from backend.settings import settings
+
+load_dotenv()
 
 def test_settings():
     assert settings.ENVIRONMENT == os.environ["ENVIRONMENT"]

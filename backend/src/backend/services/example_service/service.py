@@ -1,4 +1,4 @@
-from sqlmodel import select
+from sqlalchemy import select
 from backend.services.example_service.models import ExampleModel
 
 class ExampleService:

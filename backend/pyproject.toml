@@ -14,13 +14,13 @@ dependencies = [
     "pydantic[email]>=2.11.4",
     "pydantic-settings>=2.9.1",
     "python-dotenv>=1.1.0",
-    "sqlmodel>=0.0.24",
     "uvicorn>=0.34.2",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
     "python-multipart>=0.0.9",
     "fastapi-users[oauth,sqlalchemy]>=14.0.1",
     "asyncpg>=0.30.0",
+    "fastapi-users-db-sqlalchemy>=7.0.0",
 ]
 
 [project.scripts]
@@ -33,4 +33,5 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "pytest>=8.3.5",
+    "ruff>=0.11.11",
 ]

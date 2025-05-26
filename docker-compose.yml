@@ -1,29 +1,21 @@
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: fastapi-backend
+  db:
+    image: postgres:16
+    container_name: postgres-db
     ports:
-      - "${BACKEND_PORT}:8000"
-    env_file:
-      - .env
+      - "${PGPORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE}
     volumes:
-      - ./backend:/app
+      - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
-    
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: react-frontend
-    ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-    volumes:
-      - ./frontend:/app
-      - /frontend/node_modules
-    env_file:
-      - .env
-    depends_on:
-      - backend
-    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

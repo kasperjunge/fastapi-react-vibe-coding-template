@@ -30,24 +30,62 @@ Thank you for considering contributing to this FastAPI backend! We welcome impro
    git clone https://github.com/your-organization/backend.git
    cd backend
    ```
+
 2. **Install dependencies** in a Python 3.12+ environment:
 
    ```bash
    uv sync
    ```
-3. **Create a `.env` file** at the project root (one directory above `backend/`). Copy the provided `.env.example` and rename it:
+
+3. **Set up environment variables**. Create a `.env` file at the project root (one directory above `backend/`) with the required configuration variables. You can reference the environment variables used in `backend/src/backend/settings.py`:
 
    ```bash
-   cp .env.example .env
+   # Example .env file
+   ENVIRONMENT=dev
+   POSTGRES_HOST=localhost
+   POSTGRES_PORT=5432
+   POSTGRES_DB=db
+   POSTGRES_USER=postgres
+   POSTGRES_PASSWORD=secret
+   BACKEND_HOST=localhost
+   BACKEND_PORT=8000
+   VITE_API_URL=http://localhost:8000
+   FRONTEND_PORT=3000
+   ADMIN_EMAIL=admin@example.com
+   ADMIN_USERNAME=admin
+   ADMIN_PASSWORD=admin123
+   ADMIN_FIRST_NAME=Admin
+   ADMIN_LAST_NAME=User
+   SECRET_KEY=your-secret-key-here
    ```
 
-   This `.env` file will be read by `settings.py` to configure the application.
-4. **Run migrations** and start the development server:
+4. **Set up the database**. You can use the provided Docker setup:
 
    ```bash
+   # From the project root
+   docker-compose up -d db
+   ```
+
+   Or use the manual Docker command from `NOTES.md`:
+
+   ```bash
+   docker run --name local-postgres \
+     -e POSTGRES_DB=db \
+     -e POSTGRES_USER=postgres \
+     -e POSTGRES_PASSWORD=secret \
+     -p 5432:5432 \
+     -v pgdata:/var/lib/postgresql/data \
+     -d postgres
+   ```
+
+5. **Run migrations** and start the development server:
+
+   ```bash
+   uv run alembic upgrade head
    uv run backend
    ```
-5. **Verify** the API is running at `http://localhost:8000`.
+
+6. **Verify** the API is running at `http://localhost:8000`.
 
 ---
 
@@ -72,6 +110,7 @@ If you encounter a bug or have a feature request:
    ```bash
    git checkout -b feature/brief-description
    ```
+
 2. Commit logically related changes.
 3. Rebase or merge from `main` to keep your branch up to date:
 
@@ -79,6 +118,7 @@ If you encounter a bug or have a feature request:
    git fetch origin
    git rebase origin/main
    ```
+
 4. Push your branch to your fork:
 
    ```bash
@@ -98,7 +138,7 @@ If you encounter a bug or have a feature request:
 
 ## Coding Guidelines
 
-* **Language & Framework**: Python 3.12, FastAPI, SQLModel.
+* **Language & Framework**: Python 3.12, FastAPI, SQLAlchemy (async), FastAPI-Users for authentication.
 * **Formatting**: Follow [PEP 8](https://peps.python.org/pep-0008/).
 * **Imports**: Group standard library, third-party, and local imports separately.
 * **Type Hints**: Use Python type annotations consistently.
@@ -129,25 +169,34 @@ Organize new code following the existing service-oriented layout:
 backend/
 ├── src/backend/
 │   ├── services/
-│   │   └── your_service/
-│   │       ├── models.py    # SQLModel definitions
-│   │       ├── schemas.py   # Pydantic schemas
-│   │       ├── service.py   # Business logic
-│   │       └── routes.py    # API routes
-│   ├── api.py              # Register routers
-│   ├── db.py               # Engine & session
+│   │   ├── auth/            # Authentication service (FastAPI-Users)
+│   │   ├── users/           # User management
+│   │   │   ├── models.py    # SQLAlchemy User model
+│   │   │   └── ...
+│   │   ├── example_service/ # Example service template
+│   │   │   ├── models.py    # SQLAlchemy model definitions
+│   │   │   ├── schemas.py   # Pydantic schemas
+│   │   │   ├── service.py   # Business logic
+│   │   │   └── routes.py    # API routes
+│   │   └── your_service/    # Your new service
+│   ├── app.py              # FastAPI app setup
+│   ├── db.py               # SQLAlchemy engine & session
 │   ├── main.py             # Entry point
-│   └── settings.py         # Configurations
-├── migrations/             # Alembic files
+│   └── settings.py         # Pydantic settings
+├── migrations/             # Alembic migration files
 ├── tests/                  # Mirror src structure for tests
+├── alembic.ini            # Alembic configuration
+├── pyproject.toml         # Project dependencies (uv)
 └── Dockerfile
 ```
 
 **Guidelines:**
 
 * Place new services under `src/backend/services/` with matching test modules under `tests/services/`.
+* Use SQLAlchemy models with the `Base` from `backend.db`.
+* For authentication, extend the existing FastAPI-Users setup in `services/auth/` and `services/users/`.
 * Keep modules focused: one class or related functions per file.
-* Update `src/backend/api.py` to include new routers with appropriate tags.
+* Update `src/backend/app.py` to include new routers with appropriate tags.
 * Write tests alongside new code, following naming conventions (`test_<module>.py`).
 
 ---
@@ -159,8 +208,9 @@ backend/
   ```
   type(scope): short description
   ```
+
 * **type**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-* **scope**: The area affected, e.g., `auth`, `example_service`.
+* **scope**: The area affected, e.g., `auth`, `users`, `example_service`.
 
 ---
 
@@ -172,6 +222,7 @@ backend/
   ```bash
   uv run pytest
   ```
+
 * Aim for high coverage on new features and bug fixes.
 
 ---
@@ -186,6 +237,7 @@ backend/
    * Description of changes
    * Related issue number (if any)
    * Any migration steps (if DB schema changed)
+
 5. Request reviews from at least one other maintainer.
 
 ---
@@ -198,6 +250,7 @@ backend/
   * Style and adherence to guidelines
   * Test coverage
   * Documentation updates
+
 * Address review comments promptly.
 
 ---
