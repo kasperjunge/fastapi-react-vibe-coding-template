@@ -5,6 +5,7 @@ from fastapi_users import BaseUserManager, UUIDIDMixin
 
 from backend.services.users.models import User
 from backend.settings import settings
+from backend.services.email.service import email_service
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = settings.SECRET_KEY
@@ -12,6 +13,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
+        # Generate verification token and send email
+        token = await self.generate_verification_token(user)
+        await email_service.send_verification_email(
+            email=user.email,
+            token=token,
+            user_name=getattr(user, 'first_name', 'User') or 'User'
+        )
 
     async def on_after_login(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has logged in.")
@@ -24,6 +32,11 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         
     async def on_after_verify(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has verified their account.")
+        # Send welcome email after verification
+        await email_service.send_welcome_email(
+            email=user.email,
+            user_name=getattr(user, 'first_name', 'User') or 'User'
+        )
 
     async def on_after_reset_password(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has reset their password.")

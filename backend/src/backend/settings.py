@@ -40,6 +40,27 @@ class Settings(BaseSettings):
     # ACCESS_TOKEN_EXPIRE_MINUTES: int
     # REFRESH_TOKEN_EXPIRE_DAYS: int
 
+    # Email Configuration
+    MAIL_USERNAME: str = ""
+    MAIL_PASSWORD: str = ""
+    MAIL_FROM: str = ""
+    MAIL_PORT: int = 587
+    MAIL_SERVER: str = "localhost"
+    MAIL_FROM_NAME: str = "FastAPI App"
+    MAIL_STARTTLS: bool = True
+    MAIL_SSL_TLS: bool = False
+    USE_CREDENTIALS: bool = True
+    VALIDATE_CERTS: bool = True
+    
+    # Email Provider (mailhog, gmail, resend)
+    EMAIL_PROVIDER: str = "mailhog"
+    
+    # Resend API (for production)
+    RESEND_API_KEY: str = ""
+    
+    # Verification settings
+    VERIFICATION_TOKEN_EXPIRE_HOURS: int = 24
+
     # For pydantic v2, use SettingsConfigDict instead of Config class
     model_config = SettingsConfigDict(
         env_prefix="",
