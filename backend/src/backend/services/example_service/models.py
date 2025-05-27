@@ -1,6 +1,9 @@
-from sqlmodel import SQLModel, Field
+# from sqlalchemy import Column, Integer, String
 
-class ExampleModel(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    name: str
-    description: str
+# from backend.db import Base
+
+# class ExampleModel(Base):
+#     __tablename__ = "example_model"
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String)
+#     description = Column(String)

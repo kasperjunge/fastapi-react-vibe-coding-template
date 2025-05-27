@@ -12,11 +12,13 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.2",
     "@tailwindcss/vite": "^4.1.6",
+    "@types/react-router-dom": "^5.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.510.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.1",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.6"
   },
