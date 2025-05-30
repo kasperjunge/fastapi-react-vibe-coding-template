@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.services.auth.utils import fastapi_users
+from backend.services.auth.utils import fastapi_users, auth_backend
 from backend.services.users.schemas import UserRead, UserCreate
 
 router = APIRouter()
@@ -19,5 +19,12 @@ router.include_router(
 router.include_router(
     fastapi_users.get_verify_router(UserRead),
     prefix="/auth",
+    tags=["auth"],
+)
+
+# Add JWT authentication router for login/logout
+router.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
     tags=["auth"],
 )

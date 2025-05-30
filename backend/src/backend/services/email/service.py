@@ -70,7 +70,7 @@ class EmailService:
                     template_name="verification_email.html",
                     template_data={
                         "user_name": user_name,
-                        "verification_link": f"{settings.VITE_API_URL}/verify-email?token={token}",
+                        "verification_link": f"{settings.FRONTEND_URL}/verify-email/{token}",
                         "app_name": settings.MAIL_FROM_NAME
                     }
                 )
@@ -79,7 +79,7 @@ class EmailService:
                 template = self.jinja_env.get_template("verification_email.html")
                 html_content = template.render(
                     user_name=user_name,
-                    verification_link=f"{settings.VITE_API_URL}/verify-email?token={token}",
+                    verification_link=f"{settings.FRONTEND_URL}/verify-email/{token}",
                     app_name=settings.MAIL_FROM_NAME
                 )
                 
@@ -108,7 +108,7 @@ class EmailService:
                     template_data={
                         "user_name": user_name,
                         "app_name": settings.MAIL_FROM_NAME,
-                        "login_link": settings.VITE_API_URL
+                        "login_link": settings.FRONTEND_URL
                     }
                 )
             else:
@@ -116,7 +116,7 @@ class EmailService:
                 html_content = template.render(
                     user_name=user_name,
                     app_name=settings.MAIL_FROM_NAME,
-                    login_link=settings.VITE_API_URL
+                    login_link=settings.FRONTEND_URL
                 )
                 
                 message = MessageSchema(

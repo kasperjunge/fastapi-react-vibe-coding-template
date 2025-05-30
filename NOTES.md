@@ -9,3 +9,6 @@ docker run --name local-postgres \
 
 # Access Local Postgres db in Docker Container
 docker exec -it local-postgres psql -U postgres -d db
+
+
+# TODO:

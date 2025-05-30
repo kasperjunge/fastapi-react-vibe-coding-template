@@ -1,10 +1,12 @@
 import pathlib
+from typing import Literal
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 
 try:
     env_path = pathlib.Path(__file__).absolute().parents[3] / ".env"
     load_dotenv(dotenv_path=env_path)
+    backend_root = pathlib.Path(__file__).absolute().parents[2]
 except (IndexError, FileNotFoundError):
     pass
 
@@ -12,19 +14,25 @@ class Settings(BaseSettings):
     # Environment (dev, prod)
     ENVIRONMENT: str
 
-    # Postgres DB
-    POSTGRES_HOST: str
-    POSTGRES_PORT: str
-    POSTGRES_DB: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
+    # Database Configuration
+    DATABASE_TYPE: Literal["sqlite", "postgresql"] = "sqlite"
+    
+    # SQLite Configuration (default for development)
+    SQLITE_DB_PATH: str = str(backend_root / "app.db")
+    
+    # PostgreSQL Configuration (for production or when DATABASE_TYPE=postgresql)
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: str = "5432"
+    POSTGRES_DB: str = "db"
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "secret"
 
     # Backend
     BACKEND_HOST: str
     BACKEND_PORT: int
 
     # Frontend
-    VITE_API_URL: str
+    FRONTEND_HOST: str
     FRONTEND_PORT: str
     
     # Admin user
@@ -68,12 +76,35 @@ class Settings(BaseSettings):
     )
 
     @property
+    def FRONTEND_URL(self) -> str:
+        return f"http://{self.FRONTEND_HOST}:{self.FRONTEND_PORT}"
+
+
+    @property
     def DATABASE_URL(self) -> str:
-        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        """Generate async database URL based on database type."""
+        if self.DATABASE_TYPE.lower() == "sqlite":
+            # Ensure directory exists for SQLite database
+            db_path = pathlib.Path(self.SQLITE_DB_PATH)
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            return f"sqlite+aiosqlite:///{self.SQLITE_DB_PATH}"
+        elif self.DATABASE_TYPE.lower() == "postgresql":
+            return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        else:
+            raise ValueError(f"Unsupported database type: {self.DATABASE_TYPE}")
 
     @property
     def DATABASE_URL_SYNC(self) -> str:
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        """Generate sync database URL based on database type (for Alembic migrations)."""
+        if self.DATABASE_TYPE.lower() == "sqlite":
+            # Ensure directory exists for SQLite database
+            db_path = pathlib.Path(self.SQLITE_DB_PATH)
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            return f"sqlite:///{self.SQLITE_DB_PATH}"
+        elif self.DATABASE_TYPE.lower() == "postgresql":
+            return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        else:
+            raise ValueError(f"Unsupported database type: {self.DATABASE_TYPE}")
 
 
 settings = Settings()
