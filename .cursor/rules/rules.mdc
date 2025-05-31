@@ -4,9 +4,9 @@ globs:
 alwaysApply: true
 ---
 - Use CURRENT_TASK.md to define and track the project’s ongoing progress at all times.
-- Record everything you learn about the codebase in CODEBASE.md, consult it before inspecting source files, and keep it updated whenever the codebase changes so it always reflects the latest state.
-- For everything else that the above documents doesn't cover, record useful information and insights in SCRATCHPAD.md so you can reference them across chats and assignments.
-- The current OpenAPI schema for the FastAPI backend is automatically dumped to `agent/openapi.json` every time the backend starts, so check there for the latest API endpoints and schemas.
+- Whenever you learn something about the codebase, write it dont in the CODEBASE.md. Rememeber consult it before inspecting source files, and keep it updated whenever the codebase changes so it always reflects the latest state.
+- A summary of the current OpenAPI schema for the FastAPI backend is automatically dumped to `agent/API_SUMMARY.md` every time the backend starts, so check there for the latest API endpoints and schemas.
+- Use agent/CHANGELOG.md to keep track of changes, by adding bullets with brief sentences that describes the changes you've made.
 
 
 
