@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
+    "@types/react-router-dom": "^5.3.3",
+    "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.523.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.58.1",
+    "react-router-dom": "^7.6.2",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.10"
   },

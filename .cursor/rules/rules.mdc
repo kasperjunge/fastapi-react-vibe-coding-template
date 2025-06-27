@@ -3,7 +3,6 @@ description:
 globs: 
 alwaysApply: true
 ---
-
 # Python
 Use uv for Python environment management. Here’s how:
 - To install the environment, run: uv sync
