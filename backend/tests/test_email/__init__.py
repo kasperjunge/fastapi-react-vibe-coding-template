@@ -1,1 +1,0 @@
-# Email service tests package 
